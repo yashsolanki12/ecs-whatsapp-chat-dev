@@ -1,0 +1,25 @@
+name: Shopify Lighthouse CI
+
+on:
+  push:
+    branches:
+      - main
+      - development
+  pull_request:
+    branches:
+      - main
+      - development
+
+jobs:
+  lhci:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lighthouse
+        uses: shopify/lighthouse-ci-action@v1
+        env:
+          SHOP_STORE: ${{ secrets.SHOP_STORE }}
+          SHOP_APP_PASSWORD: ${{ secrets.SHOP_APP_PASSWORD }}
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          SHOP_APP_ID: ${{ secrets.SHOP_APP_ID }}
