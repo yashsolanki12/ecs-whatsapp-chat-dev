@@ -1,0 +1,14 @@
+name = "ecs-whatsapp-chat-dev"
+type = "theme"
+uid = "0225763d-e467-7492-e499-ef258a19d3fa7a6656ae"
+
+[blocks]
+	[blocks.app-embed]
+	name = "App Embed Block"
+	target = "head"
+	file = "blocks/whatsapp-mern.liquid"
+
+# Optional: Add metafields if needed
+# [[extensions.metafields]]
+# namespace = "custom"
+# key = "scripts"
