@@ -1,0 +1,64 @@
+/* Custom styling for CountrySelect dropdown */
+.country-select-container {
+  position: relative;
+}
+
+.country-select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.country-select-wrapper select {
+  appearance: none;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 30px;
+  cursor: pointer;
+}
+
+/* Add custom flag icons */
+.country-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.country-option::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 14px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* Styling for the react-phone-number-input CountrySelect */
+.react-phone-number-input__country {
+  padding: 8px;
+}
+
+.react-phone-number-input__country:hover {
+  background-color: #f5f5f5;
+}
+
+/* Dropdown arrow styling */
+.react-phone-number-input__icon {
+  position: relative;
+}
+
+.react-phone-number-input__icon--select {
+  padding-right: 20px;
+}
+
+/* Ensure dropdown shows flags */
+.react-phone-number-input__country-select-arrow {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #666;
+  margin-left: 4px;
+}
