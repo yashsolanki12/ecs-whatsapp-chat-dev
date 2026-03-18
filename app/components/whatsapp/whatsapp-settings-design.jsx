@@ -22,6 +22,10 @@ import CardContent from "@mui/material/CardContent";
 import CountryCodeSelect from "../phone/CountryCodeSelect";
 import { phoneSchema } from "../../validation/phone.schema";
 import { createPhone } from "../../api/phone";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 export default function WhatsAppSettingsDesign({
   initialSettings = {},
@@ -85,6 +89,9 @@ export default function WhatsAppSettingsDesign({
   const [tempCustomIcon, setTempCustomIcon] = React.useState(
     initialSettings?.custom_icon || "whatsapp",
   );
+  const [tempPageDisplay, setTempPageDisplay] = React.useState(
+    initialSettings?.page_display || "all",
+  );
 
   React.useEffect(() => {
     if (phoneData?.length > 0) {
@@ -92,6 +99,7 @@ export default function WhatsAppSettingsDesign({
       if (firstPhone.position) setTempIconPosition(firstPhone.position);
       if (firstPhone.button_style) setTempButtonStyle(firstPhone.button_style);
       if (firstPhone.custom_icon) setTempCustomIcon(firstPhone.custom_icon);
+      if (firstPhone.page_display) setTempPageDisplay(firstPhone.page_display);
       if (firstPhone.message !== undefined) setTempMessage(firstPhone.message);
 
       setForm({
@@ -136,6 +144,7 @@ export default function WhatsAppSettingsDesign({
         position: tempIconPosition,
         button_style: tempButtonStyle,
         custom_icon: tempCustomIcon,
+        page_display: tempPageDisplay,
       };
 
       if (selectedId) {
@@ -156,6 +165,7 @@ export default function WhatsAppSettingsDesign({
           position: tempIconPosition,
           button_style: tempButtonStyle,
           custom_icon: tempCustomIcon,
+          page_display: tempPageDisplay,
         });
         queryClient.invalidateQueries({ queryKey: ["phone"] });
       }
@@ -494,6 +504,51 @@ export default function WhatsAppSettingsDesign({
                 onChange={setTempButtonStyle}
                 getIconSrc={getIconSrc}
               />
+
+              {/* Page Display Selection */}
+              <Card sx={{ mb: 3, borderRadius: "10px" }}>
+                <CardContent>
+                  <Box>
+                    <Typography
+                      variant="h2"
+                      sx={{ fontSize: "14px" }}
+                      fontWeight={600}
+                      mb={1}
+                    >
+                      Display On Pages
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontSize: "13px" }}
+                      fontWeight={450}
+                      color="textSecondary"
+                      mb={2}
+                    >
+                      Select which pages to display the WhatsApp widget on.
+                    </Typography>
+                    <FormControl fullWidth size="small">
+                      <InputLabel id="page-display-label">
+                        Display On
+                      </InputLabel>
+                      <Select
+                        labelId="page-display-label"
+                        id="page-display-select"
+                        value={tempPageDisplay}
+                        label="Display On"
+                        onChange={(e) => setTempPageDisplay(e.target.value)}
+                      >
+                        <MenuItem value="all">All Pages</MenuItem>
+                        <MenuItem value="home">Home Page</MenuItem>
+                        <MenuItem value="products">Products Page</MenuItem>
+                        <MenuItem value="catalog">
+                          Catalog / Collections
+                        </MenuItem>
+                        <MenuItem value="contact">Contact Page</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </CardContent>
+              </Card>
             </Box>
 
             <Box display="flex" mt={3}>
