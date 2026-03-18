@@ -106,15 +106,25 @@ export default function WhatsAppSettingsDesign({
     // Zod validation for phone
     const result = phoneSchema.safeParse(form);
     if (!result.success) {
-      const errors = {};
+      // Initialize errors with empty strings for both fields
+      const errors = {
+        phone_number: "",
+        country_code: "",
+      };
+
       result.error.issues.forEach((issue) => {
-        if (issue.path[0]) {
-          errors[issue.path[0]] = issue.message;
+        const fieldName = issue.path[0];
+        if (typeof fieldName === "string" && fieldName in errors) {
+          errors[fieldName] = issue.message;
         }
       });
+
       setFormErrors(errors);
       return;
     }
+
+    // Clear form errors when validation passes
+    setFormErrors({ phone_number: "", country_code: "" });
 
     setSettingsLoading(true);
     try {
@@ -211,8 +221,8 @@ export default function WhatsAppSettingsDesign({
             ⚠️ WhatsApp Widget is Currently Inactive
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            To display WhatsApp widget on your storefront, please complete the
-            configuration below and enable the App Embed in your theme editor.
+            To display WhatsApp widget on your storefront, please enable the App
+            Embed & complete the configuration below and in your theme editor.
           </Typography>
           <Button
             variant="contained"
@@ -340,6 +350,15 @@ export default function WhatsAppSettingsDesign({
                         }}
                         error={!!formErrors.country_code}
                       />
+                      {formErrors.country_code && (
+                        <Typography
+                          variant="caption"
+                          color="error"
+                          sx={{ mt: 0.5, display: "block", fontSize: "10px" }}
+                        >
+                          {formErrors.country_code}
+                        </Typography>
+                      )}
                     </Box>
                     <Box sx={{ flex: 1, width: "100%" }}>
                       <Typography

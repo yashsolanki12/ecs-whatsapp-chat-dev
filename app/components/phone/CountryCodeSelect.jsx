@@ -26,6 +26,11 @@ export default function CountryCodeSelect({ value, onChange, error }) {
       return DEFAULT_COUNTRY;
     }
 
+    // If value is empty, return default but signal to use it
+    if (val === "") {
+      return DEFAULT_COUNTRY;
+    }
+
     // If value starts with +, find country by dial code
     if (val.startsWith("+")) {
       const country = COUNTRIES_WITH_CODES.find(
@@ -40,6 +45,17 @@ export default function CountryCodeSelect({ value, onChange, error }) {
   };
 
   const selectedCountry = getCountryFromValue(value);
+
+  // If value is empty but we have a default, use the default
+  React.useEffect(() => {
+    if (
+      (!value || value === "") &&
+      onChange &&
+      selectedCountry?.dialCodes?.[0]
+    ) {
+      onChange(selectedCountry.dialCodes[0]);
+    }
+  }, []);
 
   const handleChange = (event) => {
     const countryCode = event.target.value;
