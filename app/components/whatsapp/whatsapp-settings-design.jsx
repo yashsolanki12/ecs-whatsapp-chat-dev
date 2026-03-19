@@ -26,6 +26,9 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import Checkbox from "@mui/material/Checkbox";
+import ListItemText from "@mui/material/ListItemText";
+import OutlinedInput from "@mui/material/OutlinedInput";
 
 export default function WhatsAppSettingsDesign({
   initialSettings = {},
@@ -90,7 +93,7 @@ export default function WhatsAppSettingsDesign({
     initialSettings?.custom_icon || "whatsapp",
   );
   const [tempPageDisplay, setTempPageDisplay] = React.useState(
-    initialSettings?.page_display || "all",
+    initialSettings?.page_display || ["all"],
   );
 
   React.useEffect(() => {
@@ -99,7 +102,15 @@ export default function WhatsAppSettingsDesign({
       if (firstPhone.position) setTempIconPosition(firstPhone.position);
       if (firstPhone.button_style) setTempButtonStyle(firstPhone.button_style);
       if (firstPhone.custom_icon) setTempCustomIcon(firstPhone.custom_icon);
-      if (firstPhone.page_display) setTempPageDisplay(firstPhone.page_display);
+      if (firstPhone.page_display) {
+        // Handle both string and array formats for backwards compatibility
+        const pageDisplay = firstPhone.page_display;
+        if (Array.isArray(pageDisplay)) {
+          setTempPageDisplay(pageDisplay);
+        } else if (typeof pageDisplay === "string") {
+          setTempPageDisplay([pageDisplay]);
+        }
+      }
       if (firstPhone.message !== undefined) setTempMessage(firstPhone.message);
 
       setForm({
@@ -533,17 +544,58 @@ export default function WhatsAppSettingsDesign({
                       <Select
                         labelId="page-display-label"
                         id="page-display-select"
+                        multiple
                         value={tempPageDisplay}
                         label="Display On"
-                        onChange={(e) => setTempPageDisplay(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // If "all" is selected, replace everything with just "all"
+                          if (value.includes("all")) {
+                            setTempPageDisplay(["all"]);
+                          } else {
+                            setTempPageDisplay(
+                              typeof value === "string"
+                                ? value.split(",")
+                                : value,
+                            );
+                          }
+                        }}
+                        input={<OutlinedInput label="Display On" />}
+                        renderValue={(selected) => {
+                          if (selected.includes("all")) {
+                            return "All Pages";
+                          }
+                          return selected.join(", ");
+                        }}
                       >
-                        <MenuItem value="all">All Pages</MenuItem>
-                        <MenuItem value="home">Home Page</MenuItem>
-                        <MenuItem value="products">Products Page</MenuItem>
-                        <MenuItem value="catalog">
-                          Catalog / Collections
+                        <MenuItem value="all">
+                          <Checkbox checked={tempPageDisplay.includes("all")} />
+                          <ListItemText primary="All Pages" />
                         </MenuItem>
-                        <MenuItem value="contact">Contact Page</MenuItem>
+                        <MenuItem value="home">
+                          <Checkbox
+                            checked={tempPageDisplay.includes("home")}
+                          />
+                          <ListItemText primary="Home Page" />
+                        </MenuItem>
+                        <MenuItem value="products">
+                          <Checkbox
+                            checked={tempPageDisplay.includes("products")}
+                          />
+                          <ListItemText primary="Product Page" />
+                        </MenuItem>
+                        <MenuItem value="catalog">
+                          <Checkbox
+                            checked={tempPageDisplay.includes("catalog")}
+                          />
+                          <ListItemText primary="Collection Page" />
+                        </MenuItem>
+                        <MenuItem value="contact">
+                          <Checkbox
+                            checked={tempPageDisplay.includes("contact")}
+                          />
+                          <ListItemText primary="Contact Page" />
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
