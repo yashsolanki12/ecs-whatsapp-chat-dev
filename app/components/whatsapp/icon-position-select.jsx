@@ -11,7 +11,7 @@ export default function IconPositionSelect({ value, onChange }) {
   const positionOptions = [
     {
       value: "left",
-      label: "Left",
+      label: "Bottom Left",
       description: "Button appears in bottom left corner",
       icon: (
         <Box
@@ -54,7 +54,7 @@ export default function IconPositionSelect({ value, onChange }) {
     },
     {
       value: "right",
-      label: "Right",
+      label: "Bottom Right",
       description: "Button appears in bottom right corner",
       icon: (
         <Box
@@ -180,7 +180,7 @@ export default function IconPositionSelect({ value, onChange }) {
                       textAlign: "center",
                     }}
                   >
-                    {option.description}
+                    {/* {option.description} */}
                   </Typography>
                 </Box>
               }
