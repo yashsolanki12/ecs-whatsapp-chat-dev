@@ -77,6 +77,13 @@ export default function CountryCodeSelect({ value, onChange, error }) {
         value={selectedCountry?.code || "IN"}
         onChange={handleChange}
         displayEmpty
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              maxHeight: "300px",
+            },
+          },
+        }}
         sx={{
           height: "56px",
           fontSize: "16px",

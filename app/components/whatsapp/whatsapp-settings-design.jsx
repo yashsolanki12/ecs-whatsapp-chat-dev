@@ -573,7 +573,7 @@ export default function WhatsAppSettingsDesign({
                     >
                       Display On Pages
                     </Typography>
-                    <Typography
+                    {/* <Typography
                       variant="subtitle2"
                       sx={{ fontSize: "13px" }}
                       fontWeight={450}
@@ -581,8 +581,8 @@ export default function WhatsAppSettingsDesign({
                       mb={2}
                     >
                       Select which pages to display the WhatsApp widget on.
-                    </Typography>
-                    <FormControl fullWidth size="small">
+                    </Typography> */}
+                    <FormControl fullWidth size="small" sx={{ mt: 2 }}>
                       <InputLabel id="page-display-label">
                         Display On
                       </InputLabel>
@@ -600,14 +600,25 @@ export default function WhatsAppSettingsDesign({
                               ? value.split(",")
                               : value;
 
-                          // If "all" is the only item, keep it as "all"
-                          if (
-                            newValue.length === 1 &&
-                            newValue.includes("all")
-                          ) {
-                            setTempPageDisplay(["all"]);
+                          // Check if "all" is being added or removed
+                          const wasAllSelected =
+                            tempPageDisplay.includes("all");
+                          const isAllSelected = newValue.includes("all");
+
+                          if (isAllSelected) {
+                            // If "all" is selected, select all pages
+                            setTempPageDisplay([
+                              "all",
+                              "home",
+                              "products",
+                              "catalog",
+                              "contact",
+                            ]);
+                          } else if (wasAllSelected && !isAllSelected) {
+                            // If "all" was selected but now is removed, clear everything
+                            setTempPageDisplay([]);
                           } else {
-                            // Allow multiple selections including "all" with other options
+                            // Otherwise, use the selected values (without "all")
                             setTempPageDisplay(newValue);
                           }
                         }}
@@ -616,22 +627,27 @@ export default function WhatsAppSettingsDesign({
                           if (selected.length === 0) {
                             return "Select pages";
                           }
-                          if (
-                            selected.length === 1 &&
-                            selected.includes("all")
-                          ) {
+                          // Check if all pages are selected (all + all other options)
+                          const allPages = [
+                            "all",
+                            "home",
+                            "products",
+                            "catalog",
+                            "contact",
+                          ];
+                          const allSelected = allPages.every((p) =>
+                            selected.includes(p),
+                          );
+
+                          if (allSelected) {
                             return "All Pages";
                           }
-                          // If "all" is included with other options, show all selected
-                          if (selected.includes("all") && selected.length > 1) {
-                            const otherPages = selected.filter(
-                              (p) => p !== "all",
-                            );
-                            return `All Pages, ${otherPages.join(", ")}`;
-                          }
-                          return selected
+                          // Show selected pages (without "all" label)
+                          const displayPages = selected
+                            .filter((i) => i !== "all")
                             .map((i) => i.charAt(0).toUpperCase() + i.slice(1))
                             .join(", ");
+                          return displayPages || "Select pages";
                         }}
                       >
                         <MenuItem value="all">
