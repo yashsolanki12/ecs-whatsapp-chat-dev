@@ -13,7 +13,7 @@ import IconPositionSelect from "./icon-position-select";
 import CustomIconSelect from "./custom-icon-select";
 import IconStyleSelect from "./icon-style-select";
 import LivePreview from "./live-preview";
-import { Container } from "@mui/material";
+// import { Container } from "@mui/material";
 import Loader from "../../components/skeleton/loader";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -221,54 +221,54 @@ export default function WhatsAppSettingsDesign({
     return <Loader />;
   }
 
-  if (!appEmbedEnabled) {
-    return (
-      <Container maxWidth="sm" sx={{ py: 4 }}>
-        <Box
-          sx={{
-            p: 2,
-            mb: 3,
-            borderRadius: 2,
-            bgcolor: "error.lighter",
-            border: "1px solid",
-            borderColor: "error.light",
-            display: "flex",
-            flexDirection: "column",
-            maxWidth: 500,
-            gap: 1.5,
-          }}
-        >
-          <Typography variant="body2" color="error.dark" fontWeight={600}>
-            ⚠️ WhatsApp Widget is Currently Inactive
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            To display WhatsApp widget on your storefront, please enable the App
-            Embed & complete the configuration below and in your theme editor.
-          </Typography>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            fullWidth
-            onClick={() => {
-              const currentShop =
-                session?.shop ||
-                sessionData?.session?.shop ||
-                new URLSearchParams(window.location.search).get("shop") ||
-                window.location.hostname;
-              // Redirect to the general apps context in the theme editor
-              // This will open the 'App embeds' tab directly
-              const url = `https://${currentShop}/admin/themes/current/editor?context=apps`;
-              window.open(url, "_blank");
-            }}
-            sx={{ textTransform: "none" }}
-          >
-            Enable in Theme Editor
-          </Button>
-        </Box>
-      </Container>
-    );
-  }
+  // if (!appEmbedEnabled) {
+  //   return (
+  //     <Container maxWidth="sm" sx={{ py: 4 }}>
+  //       <Box
+  //         sx={{
+  //           p: 2,
+  //           mb: 3,
+  //           borderRadius: 2,
+  //           bgcolor: "error.lighter",
+  //           border: "1px solid",
+  //           borderColor: "error.light",
+  //           display: "flex",
+  //           flexDirection: "column",
+  //           maxWidth: 500,
+  //           gap: 1.5,
+  //         }}
+  //       >
+  //         <Typography variant="body2" color="error.dark" fontWeight={600}>
+  //           ⚠️ WhatsApp Widget is Currently Inactive
+  //         </Typography>
+  //         <Typography variant="body2" color="text.secondary">
+  //           To display WhatsApp widget on your storefront, please enable the App
+  //           Embed & complete the configuration below and in your theme editor.
+  //         </Typography>
+  //         <Button
+  //           variant="contained"
+  //           color="error"
+  //           size="small"
+  //           fullWidth
+  //           onClick={() => {
+  //             const currentShop =
+  //               session?.shop ||
+  //               sessionData?.session?.shop ||
+  //               new URLSearchParams(window.location.search).get("shop") ||
+  //               window.location.hostname;
+  //             // Redirect to the general apps context in the theme editor
+  //             // This will open the 'App embeds' tab directly
+  //             const url = `https://${currentShop}/admin/themes/current/editor?context=apps`;
+  //             window.open(url, "_blank");
+  //           }}
+  //           sx={{ textTransform: "none" }}
+  //         >
+  //           Enable in Theme Editor
+  //         </Button>
+  //       </Box>
+  //     </Container>
+  //   );
+  // }
 
   return (
     <Box sx={{ p: 2 }}>
@@ -281,6 +281,51 @@ export default function WhatsAppSettingsDesign({
           // py: { xs: 2, md: 3 },
         }}
       >
+        {!appEmbedEnabled && (
+          <Box
+            sx={{
+              p: 2,
+              mb: 3,
+              borderRadius: 2,
+              bgcolor: "error.lighter",
+              border: "1px solid",
+              borderColor: "error.light",
+              display: "flex",
+              flexDirection: "column",
+              maxWidth: 500,
+              gap: 1.5,
+            }}
+          >
+            <Typography variant="body2" color="error.dark" fontWeight={600}>
+              ⚠️ WhatsApp Widget is Currently Inactive
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              To display WhatsApp widget on your storefront, please enable the
+              App Embed & complete the configuration below and in your theme
+              editor.
+            </Typography>
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              fullWidth
+              onClick={() => {
+                const currentShop =
+                  session?.shop ||
+                  sessionData?.session?.shop ||
+                  new URLSearchParams(window.location.search).get("shop") ||
+                  window.location.hostname;
+                // Redirect to the general apps context in the theme editor
+                // This will open the 'App embeds' tab directly
+                const url = `https://${currentShop}/admin/themes/current/editor?context=apps`;
+                window.open(url, "_blank");
+              }}
+              sx={{ textTransform: "none" }}
+            >
+              Enable in Theme Editor
+            </Button>
+          </Box>
+        )}
         {/* Header Section */}
         <Box mb={{ xs: 3, md: 4 }}>
           <Typography
@@ -549,23 +594,44 @@ export default function WhatsAppSettingsDesign({
                         label="Display On"
                         onChange={(e) => {
                           const value = e.target.value;
-                          // If "all" is selected, replace everything with just "all"
-                          if (value.includes("all")) {
+                          // Handle the case where MUI returns a string (when clearing the select)
+                          const newValue =
+                            typeof value === "string"
+                              ? value.split(",")
+                              : value;
+
+                          // If "all" is the only item, keep it as "all"
+                          if (
+                            newValue.length === 1 &&
+                            newValue.includes("all")
+                          ) {
                             setTempPageDisplay(["all"]);
                           } else {
-                            setTempPageDisplay(
-                              typeof value === "string"
-                                ? value.split(",")
-                                : value,
-                            );
+                            // Allow multiple selections including "all" with other options
+                            setTempPageDisplay(newValue);
                           }
                         }}
                         input={<OutlinedInput label="Display On" />}
                         renderValue={(selected) => {
-                          if (selected.includes("all")) {
+                          if (selected.length === 0) {
+                            return "Select pages";
+                          }
+                          if (
+                            selected.length === 1 &&
+                            selected.includes("all")
+                          ) {
                             return "All Pages";
                           }
-                          return selected.join(", ");
+                          // If "all" is included with other options, show all selected
+                          if (selected.includes("all") && selected.length > 1) {
+                            const otherPages = selected.filter(
+                              (p) => p !== "all",
+                            );
+                            return `All Pages, ${otherPages.join(", ")}`;
+                          }
+                          return selected
+                            .map((i) => i.charAt(0).toUpperCase() + i.slice(1))
+                            .join(", ");
                         }}
                       >
                         <MenuItem value="all">
