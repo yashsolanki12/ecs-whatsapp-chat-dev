@@ -125,7 +125,8 @@
       // Get shop domain from URL
       function getShopDomain() {
         if(typeof window !== 'undefined') {
-          return window.location.host;
+          {% comment %} return window.location.host; {% endcomment %}
+          return window.Shopify.shop;
         }
         return null;
       }
@@ -138,11 +139,10 @@
           return;
         }
         try {
-          const response = await fetch('https://ecswhatsup-backend.ecodesoft.net/api/phone', {
+          const response = await fetch(`https://whatsapp-mern-backend-sidn.onrender.com/api/phone?shop=${encodeURIComponent(shopDomain)}`, {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
-              'x-shopify-shop-domain': shopDomain
+              'Content-Type': 'application/json'
             },
             credentials: 'include'
           });
