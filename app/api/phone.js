@@ -23,8 +23,8 @@ export const getAllPhone = async () => {
 
   return axiosInstance
     .get("/phone", {
-      headers: {
-        "x-shopify-shop-domain": shopDomain,
+      params: {
+        shop: shopDomain,
       },
     })
     .then((res) => res.data)
